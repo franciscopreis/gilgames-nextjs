@@ -1,65 +1,151 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import * as React from 'react'
+import Navbar from '@/components/Navbar'
+import { Footer } from '@/components/Footer'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Image from 'next/image'
+
+// Dados de exemplo para categorias e livros
+const categories = [
+  { name: 'Romance', image: '/romance.jpg' },
+  { name: 'Ficção Científica', image: '/ficcao.jpg' },
+  { name: 'Literatura Portuguesa', image: '/portuguesa.jpg' },
+]
+
+const books = [
+  {
+    title: 'Contos',
+    author: 'Hans Christian Andersen',
+    price: '€9,99',
+    image: '/book-covers/andersen-contos.jpeg',
+  },
+  {
+    title: 'Discurso do Método & As Paixões da Alma',
+    author: 'René Descartes',
+    price: '€9,99',
+    image: '/book-covers/descartes-discurso-paixoes.jpeg',
+  },
+  {
+    title: 'A Família',
+    author: 'Jacques Lacan',
+    price: '€9,99',
+    image: '/book-covers/lacan-familia.jpeg',
+  },
+  {
+    title: 'Ensaios',
+    author: 'Montaigne',
+    price: '€9,99',
+    image: '/book-covers/montaigne-ensaios.jpeg',
+  },
+]
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <div className="font-inter">
+      {/* Hero */}
+      <section className="relative h-[70vh] flex flex-col justify-center items-center text-center">
+        {/* Imagem de fundo */}
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+          src="/gilgames-gray-hero.png"
+          alt="Fundo com entalhe de Gilgamesh"
+          fill
+          className="object-cover -z-10"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+
+        {/* Overlay escura para contraste */}
+        <div className="absolute inset-0 bg-black/50 -z-5"></div>
+
+        {/* Conteúdo do Hero */}
+        <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white drop-shadow-lg z-10">
+          Livraria GILGAMEŜ
+        </h1>
+        <p className="font-inter text-lg md:text-2xl mb-6 text-white drop-shadow-md z-10">
+          Aqui poderás encontrar livros em segunda mão para todos os gostos.
+        </p>
+        <Button size="lg" variant="default" className="z-10">
+          Dá uma olhada
+        </Button>
+      </section>
+
+      {/* Categorias */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <h2 className="font-playfair text-3xl mb-8 text-center">
+          Categorias Populares
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {categories.map((cat) => (
+            <Card
+              key={cat.name}
+              className="cursor-pointer hover:shadow-lg transition"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <CardHeader className="p-0">
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  width={400}
+                  height={250}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardTitle className="font-playfair text-xl">
+                  {cat.name}
+                </CardTitle>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Novidades */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <h2 className="font-playfair text-3xl mb-8 text-center">Novidades</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {books.map((book) => (
+            <Card
+              key={book.title}
+              className="cursor-pointer hover:shadow-lg transition"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <CardHeader className="p-0">
+                <Image
+                  src={book.image}
+                  alt={book.title}
+                  width={400}
+                  height={250}
+                  className="w-full h-60 object-contain rounded-t-lg"
+                />
+              </CardHeader>
+              <CardContent>
+                <CardTitle className="font-playfair text-lg">
+                  {book.title}
+                </CardTitle>
+                <p className="font-inter text-sm text-muted-foreground">
+                  {book.author}
+                </p>
+                <p className="font-inter font-semibold mt-2">{book.price}</p>
+                <Button className="mt-2 w-full">Comprar</Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      {/* Newsletter */}
+      <section className="bg-muted p-12 text-center rounded-lg max-w-2xl mx-auto my-16">
+        <h2 className="font-playfair text-2xl mb-4">
+          Receba novidades e promoções
+        </h2>
+        <p className="font-inter mb-6">
+          Subscreva a nossa newsletter para não perder nenhum lançamento.
+        </p>
+        <form className="flex flex-col sm:flex-row gap-2 justify-center">
+          <Input type="email" placeholder="O teu email" className="flex-1" />
+          <Button type="submit">Subscrever</Button>
+        </form>
+      </section>
     </div>
-  );
+  )
 }
