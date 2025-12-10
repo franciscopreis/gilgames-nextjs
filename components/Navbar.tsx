@@ -17,8 +17,10 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ModeToggle } from '@/components/ui/theme-toggle'
 import { Logo } from './Logo'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
+  const router = useRouter()
   return (
     <nav className="sticky top-0 z-50 bg-background border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,11 +95,18 @@ export default function Navbar() {
           {/* Ações direita (desktop) */}
           <div className="ml-auto hidden md:flex items-center gap-4">
             <ModeToggle />
-            <Button variant="outline" className="cursor-pointer">
-              <Link href="/login">Login</Link>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => router.push('/login')}
+            >
+              Login
             </Button>
-            <Button className="cursor-pointer">
-              <Link href="/signup">Registo</Link>
+            <Button
+              className="cursor-pointer"
+              onClick={() => router.push('/sign-up')}
+            >
+              Registo
             </Button>
           </div>
 

@@ -5,27 +5,17 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider            = "prisma-client"
   importFileExtension = ""
-  output   = "../lib/generated/prisma"
+  output              = "../lib/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-
-// Usuários/Admins
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  role      Role     @default(ADMIN)
-  orders    Order[]  @relation("UserOrders")
-  createdAt DateTime @default(now())
-}
-
 // Papel do usuário
+
 enum Role {
   ADMIN
   CUSTOMER
@@ -38,6 +28,7 @@ model Author {
 }
 
 // Livros do catálogo
+
 model Book {
   id          String      @id @default(cuid())
   title       String      @unique
@@ -52,8 +43,8 @@ model Book {
   updatedAt   DateTime    @updatedAt
 }
 
-
 // Categorias de livros
+
 model Category {
   id    String @id @default(cuid())
   name  String @unique
@@ -61,6 +52,7 @@ model Category {
 }
 
 // Pedidos de clientes
+
 model Order {
   id            String      @id @default(cuid())
   user          User?       @relation("UserOrders", fields: [userId], references: [id])
@@ -73,6 +65,7 @@ model Order {
 }
 
 // Itens de cada pedido
+
 model OrderItem {
   id              String  @id @default(cuid())
   orderId         String
@@ -84,10 +77,78 @@ model OrderItem {
 }
 
 // Status do pedido
+
 enum OrderStatus {
   PENDING
   PAID
   SHIPPED
   COMPLETED
   CANCELLED
+}
+
+// BetterAuth models
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  role          Role      @default(ADMIN)
+  orders        Order[]   @relation("UserOrders")
+  createdAt     DateTime  @default(now())
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
