@@ -15,9 +15,79 @@ datasource db {
 }
 
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
+// Usuários/Admins
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  orders    Order[]  @relation("UserOrders")
   createdAt DateTime @default(now())
+}
+
+// Papel do usuário
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model Author {
+  id    String @id @default(cuid())
+  name  String @unique
+  books Book[] @relation("BookAuthors")
+}
+
+// Livros do catálogo
+model Book {
+  id          String      @id @default(cuid())
+  title       String      @unique
+  description String?
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int         @default(0)
+  coverImage  String?
+  authors     Author[]    @relation("BookAuthors")
+  categories  Category[]  @relation("BookCategories")
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+
+// Categorias de livros
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  books Book[] @relation("BookCategories")
+}
+
+// Pedidos de clientes
+model Order {
+  id            String      @id @default(cuid())
+  user          User?       @relation("UserOrders", fields: [userId], references: [id])
+  userId        String?
+  items         OrderItem[]
+  totalPrice    Decimal     @db.Decimal(10, 2)
+  shippingPrice Decimal     @db.Decimal(10, 2)
+  status        OrderStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+}
+
+// Itens de cada pedido
+model OrderItem {
+  id              String  @id @default(cuid())
+  orderId         String
+  bookId          String
+  order           Order   @relation(fields: [orderId], references: [id])
+  book            Book    @relation(fields: [bookId], references: [id])
+  quantity        Int     @default(1)
+  priceAtPurchase Decimal @db.Decimal(10, 2)
+}
+
+// Status do pedido
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
 }
