@@ -5,14 +5,19 @@ import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/custom/card'
 import Image from 'next/image'
 
 // Dados de exemplo para categorias e livros
 const categories = [
-  { name: 'Romance', image: '/romance.jpg' },
-  { name: 'Ficção Científica', image: '/ficcao.jpg' },
-  { name: 'Literatura Portuguesa', image: '/portuguesa.jpg' },
+  { name: 'Poesia', image: '/romance.jpg' },
+  { name: 'Prosa', image: '/ficcao.jpg' },
+  { name: 'Outros', image: '/portuguesa.jpg' },
 ]
 
 const books = [
@@ -86,8 +91,8 @@ export default function HomePage() {
                   src={cat.image}
                   alt={cat.name}
                   width={400}
-                  height={250}
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  height={400}
+                  className="w-auto h-auto  rounded-t-lg"
                 />
               </CardHeader>
               <CardContent className="text-center">
@@ -103,29 +108,36 @@ export default function HomePage() {
       {/* Novidades */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <h2 className="font-playfair text-3xl mb-8 text-center">Novidades</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6 ">
           {books.map((book) => (
             <Card
               key={book.title}
-              className="cursor-pointer hover:shadow-lg transition"
+              className="cursor-pointer hover:shadow-lg transition p-2 gap-2" // Acrescentei gap-2
             >
               <CardHeader className="p-0">
                 <Image
                   src={book.image}
                   alt={book.title}
                   width={400}
-                  height={250}
-                  className="w-full h-60 object-contain rounded-t-lg"
+                  height={400}
+                  className="w-auto h-auto object-contain rounded-t-lg p-2"
                 />
               </CardHeader>
-              <CardContent>
-                <CardTitle className="font-playfair text-lg">
-                  {book.title}
-                </CardTitle>
-                <p className="font-inter text-sm text-muted-foreground">
-                  {book.author}
-                </p>
-                <p className="font-inter font-semibold mt-2">{book.price}</p>
+
+              {/* Adicionei margem inferior, pois removi py-6 do Card */}
+              {/* Acrescentei a div para garantir que os botões comprar ficam alinhados */}
+              <CardContent className="mb-4 justify-between flex flex-col h-full">
+                <div>
+                  <CardTitle className="font-playfair text-lg">
+                    {/* Eventualmente dar um limite de palavras */}
+                    {book.title}
+                  </CardTitle>
+                  <p className="font-inter text-sm text-muted-foreground">
+                    {book.author}
+                  </p>
+                  <p className="font-inter font-semibold mt-2">{book.price}</p>
+                </div>
+
                 <Button className="mt-2 w-full">Comprar</Button>
               </CardContent>
             </Card>

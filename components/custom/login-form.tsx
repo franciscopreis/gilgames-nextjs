@@ -85,6 +85,7 @@ export function LoginForm({
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -100,7 +101,7 @@ export function LoginForm({
                     Esqueceste-te da tua password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
                 {error && <p className="text-red-500">{error}</p>}
               </Field>
               <Field>

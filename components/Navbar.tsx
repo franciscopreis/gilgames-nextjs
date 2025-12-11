@@ -104,7 +104,7 @@ export default function Navbar() {
             </Button>
             <Button
               className="cursor-pointer"
-              onClick={() => router.push('/sign-up')}
+              onClick={() => router.push('/registo')}
             >
               Registo
             </Button>
@@ -112,11 +112,19 @@ export default function Navbar() {
 
           {/* Menu mobile */}
           <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden ml-auto">
-                <Menu />
-              </Button>
-            </SheetTrigger>
+            <div className="items-end flex ml-auto md:hidden">
+              <ModeToggle />
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden ml-auto"
+                >
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+            </div>
+
             <SheetContent side="right" className="w-64 p-6">
               <div className="flex flex-col space-y-4">
                 {/* Mobile Nav */}
@@ -166,7 +174,6 @@ export default function Navbar() {
                     </Button>
                     <Button className="cursor-pointer">Registar</Button>
                   </div>
-                  <ModeToggle />
                 </div>
               </div>
             </SheetContent>

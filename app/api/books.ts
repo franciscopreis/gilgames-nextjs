@@ -1,9 +1,7 @@
 // app/api/books/route.ts
 import { NextRequest } from 'next/server'
-import { PrismaClient } from '@/lib/generated/prisma/client'
+import prisma from '@/lib/db'
 import { successResponse, errorResponse } from '@/lib/utils/responses'
-
-const prisma = new PrismaClient()
 
 export async function GET(req: NextRequest) {
   try {

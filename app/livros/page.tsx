@@ -1,6 +1,6 @@
 // app/books/page.tsx
 import BookCard, { Book } from '@/components/BookCard'
-import { prisma } from '@/lib/db'
+import prisma from '@/lib/db'
 
 export default async function BooksPage() {
   // Busca todos os livros
