@@ -22,14 +22,18 @@ import { Book, Heart, Settings, ClipboardList } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
+
+  // Check user session
   const { data: session, isPending } = useSession()
 
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (!isPending && !session?.user) {
       router.push('/login')
     }
   }, [isPending, session, router])
 
+  // Show loading state while checking session
   if (isPending) {
     return (
       <div className="flex flex-col items-center justify-center h-screen space-y-4 p-6">
@@ -40,11 +44,13 @@ export default function DashboardPage() {
     )
   }
 
+  // If no user, show redirecting message
   if (!session?.user)
     return <p className="text-center mt-8 text-white">Redireccionando...</p>
 
-  const { user } = session
-  const initials = user.name
+  // User is authenticated, render dashboard
+  const { user } = session // Extract user info
+  const initials = user.name // Generate initials for avatar fallback
     ? user.name
         .split(' ')
         .map((n) => n[0])

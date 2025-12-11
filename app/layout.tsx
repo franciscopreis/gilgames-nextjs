@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/Navbar'
+import Navbar from '@/components/navbar/Navbar'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Footer } from '@/components/Footer'
 
