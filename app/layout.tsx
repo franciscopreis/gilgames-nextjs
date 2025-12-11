@@ -20,7 +20,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Livraria GILGAMEŜ',
+  title: 'Livraria GILGĀMEŠ',
   description: 'Livros usados para todos os gostos',
 }
 

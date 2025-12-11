@@ -64,8 +64,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/50 -z-5"></div>
 
         {/* Conteúdo do Hero */}
-        <h1 className="font-playfair text-4xl md:text-6xl mb-4 text-white drop-shadow-lg z-10">
-          Livraria GILGAMEŜ
+        <h1 className=" text-4xl md:text-6xl mb-4 text-white drop-shadow-lg z-10">
+          Livraria GILGĀMEŠ
         </h1>
         <p className="font-inter text-lg md:text-2xl mb-6 text-white drop-shadow-md z-10">
           Aqui poderás encontrar livros em segunda mão para todos os gostos.
@@ -77,9 +77,7 @@ export default function HomePage() {
 
       {/* Categorias */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="font-playfair text-3xl mb-8 text-center">
-          Categorias Populares
-        </h2>
+        <h2 className="text-3xl mb-8 text-center">Categorias Populares</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {categories.map((cat) => (
             <Card
@@ -96,9 +94,7 @@ export default function HomePage() {
                 />
               </CardHeader>
               <CardContent className="text-center">
-                <CardTitle className="font-playfair text-xl">
-                  {cat.name}
-                </CardTitle>
+                <CardTitle className="text-xl">{cat.name}</CardTitle>
               </CardContent>
             </Card>
           ))}
@@ -107,7 +103,7 @@ export default function HomePage() {
 
       {/* Novidades */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="font-playfair text-3xl mb-8 text-center">Novidades</h2>
+        <h2 className="text-3xl mb-8 text-center">Novidades</h2>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6 ">
           {books.map((book) => (
             <Card
@@ -128,7 +124,7 @@ export default function HomePage() {
               {/* Acrescentei a div para garantir que os botões comprar ficam alinhados */}
               <CardContent className="mb-4 justify-between flex flex-col h-full">
                 <div>
-                  <CardTitle className="font-playfair text-lg">
+                  <CardTitle className="text-lg">
                     {/* Eventualmente dar um limite de palavras */}
                     {book.title}
                   </CardTitle>
@@ -147,9 +143,7 @@ export default function HomePage() {
 
       {/* Newsletter */}
       <section className="bg-muted p-12 text-center rounded-lg max-w-2xl mx-auto my-16">
-        <h2 className="font-playfair text-2xl mb-4">
-          Receba novidades e promoções
-        </h2>
+        <h2 className="text-2xl mb-4">Receba novidades e promoções</h2>
         <p className="font-inter mb-6">
           Subscreva a nossa newsletter para não perder nenhum lançamento.
         </p>

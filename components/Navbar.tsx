@@ -22,14 +22,14 @@ import { useRouter } from 'next/navigation'
 export default function Navbar() {
   const router = useRouter()
   return (
-    <nav className="sticky top-0 z-50 bg-background border-b">
+    <nav className="sticky top-0 z-50 bg-background border-b font-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative h-16 flex items-center">
           {/* Logo (lado esquerdo) */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Logo />
-            <div className="flex flex-col font-bold">
-              <span>GILGAMEŜ</span>
+            <div className="flex flex-col font-bold  leading-tigh tracking-widest">
+              <span>GILGĀMEŠ</span>
               <span>livraria</span>
             </div>
           </div>
