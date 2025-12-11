@@ -21,7 +21,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { User, UserPlus, Menu } from 'lucide-react'
-import { ModeToggle } from '@/components/ui/theme-toggle'
 
 export default function UserMenuMobile() {
   const router = useRouter()

@@ -1,8 +1,5 @@
 'use client'
 
-import * as React from 'react'
-import Navbar from '@/components/navbar/Navbar'
-import { Footer } from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -57,11 +54,11 @@ export default function HomePage() {
           src="/gilgames-gray-hero.png"
           alt="Fundo com entalhe de Gilgamesh"
           fill
-          className="object-cover -z-10"
+          className="object-cover -z-10 dark:filter dark:invert "
         />
 
         {/* Overlay escura para contraste */}
-        <div className="absolute inset-0 bg-black/50 -z-5"></div>
+        <div className="absolute inset-0 bg-black/40 -z-5"></div>
 
         {/* Conteúdo do Hero */}
         <h1 className=" text-4xl md:text-6xl mb-4 text-white drop-shadow-lg z-10">

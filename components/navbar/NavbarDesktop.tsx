@@ -2,7 +2,6 @@
 
 import { useSession } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 import {
   NavigationMenu,
@@ -36,7 +35,7 @@ export default function NavbarDesktop() {
       </div>
 
       {/* Center menu */}
-      <div className="flex-grow flex justify-center">
+      <div className="grow flex justify-center">
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>

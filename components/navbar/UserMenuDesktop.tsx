@@ -6,19 +6,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { signOut } from '@/lib/auth-client'
 
-export default function UserMenuDesktop({ user }) {
+// Tipagem do user compatível com a sessão
+interface User {
+  name?: string | null
+  image?: string | null
+}
+
+interface UserMenuDesktopProps {
+  user: User
+}
+
+export default function UserMenuDesktop({ user }: UserMenuDesktopProps) {
   const router = useRouter()
 
+  // Inicials seguro mesmo que name seja null/undefined
   const initials = user?.name
     ? user.name
         .split(' ')
-        .map((n) => n[0])
+        .map((n: string) => n[0])
         .join('')
     : 'U'
 
@@ -27,7 +37,10 @@ export default function UserMenuDesktop({ user }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="p-0">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.image || ''} alt={user.name} />
+            <AvatarImage
+              src={user.image ?? undefined}
+              alt={user.name ?? 'User'}
+            />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </Button>
