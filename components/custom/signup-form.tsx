@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signUp } from '@/lib/auth-client'
+import Link from 'next/link'
 
 export function SignupForm({
   className,
@@ -66,6 +67,7 @@ export function SignupForm({
                   name="name"
                   type="text"
                   placeholder="John Doe"
+                  className="border-primary dark:border-secondary"
                   required
                 />
               </Field>
@@ -77,6 +79,7 @@ export function SignupForm({
                   name="email"
                   type="email"
                   placeholder="m@example.com"
+                  className="border-primary dark:border-secondary"
                   required
                 />
               </Field>
@@ -89,6 +92,7 @@ export function SignupForm({
                       id="password"
                       name="password"
                       type="password"
+                      className="border-primary dark:border-secondary"
                       required
                     />
                   </Field>
@@ -100,6 +104,7 @@ export function SignupForm({
                       id="confirm-password"
                       name="confirm-password"
                       type="password"
+                      className="border-primary dark:border-secondary"
                       required
                     />
                     {error && <p className="text-red-500">{error}</p>}
@@ -113,7 +118,7 @@ export function SignupForm({
               <Field>
                 <Button type="submit">Criar Conta</Button>
                 <FieldDescription className="text-center">
-                  Já tens conta? <a href="#">Faz login</a>
+                  Já tens conta? <Link href="/login">Faz login</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

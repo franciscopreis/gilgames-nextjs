@@ -1,22 +1,16 @@
 // app/books/page.tsx
 import BookCard, { Book } from '@/components/BookCard'
 import prisma from '@/lib/db'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
+
+type BookWithAuthors = Book & {
+  authorNames: string
+  categoryNames: string
+}
 
 export default async function BooksPage() {
-  // Busca todos os livros
-  const booksFromDb = await prisma.book.findMany()
-
-  // Converte Decimal → number
-  const books: Book[] = booksFromDb.map((book) => ({
-    ...book,
-    price: Number(book.price),
-  }))
-
-  return (
-    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {books.map((book) => (
-        <BookCard key={book.id} book={book} />
-      ))}
-    </div>
-  )
+  return redirect('/livros/todos')
 }

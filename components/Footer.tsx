@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
-import { Icons } from './Icons'
+import { Facebook, Instagram } from './SocialIcons'
 
 export function Footer() {
   return (
@@ -31,7 +31,7 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/loja" className="hover:underline">
+              <Link href="/livros/todos" className="hover:underline">
                 Loja
               </Link>
             </li>
@@ -41,7 +41,7 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/contactos" className="hover:underline">
+              <Link href="/sobre/contacto" className="hover:underline">
                 Contactos
               </Link>
             </li>
@@ -55,23 +55,24 @@ export function Footer() {
             Subscreve para receber em primeira mão os livros que publicámos.
           </p>
           <form className="flex gap-2">
-            <Input type="email" placeholder="O teu email" className="flex-1" />
+            <Input
+              type="email"
+              placeholder="O teu email"
+              className="flex-1 border-primary dark:border-secondary"
+            />
             <Button type="submit">Subscrever</Button>
           </form>
           <div className="flex space-x-4 mt-4">
-            {/* <Link href="#" aria-label="Facebook" className="hover:text-primary">
-              <Icons.facebook className="w-5 h-5" />
+            <Link href="#" aria-label="Facebook" className="hover:text-primary">
+              <Facebook className="w-5 h-5" />
             </Link>
             <Link
               href="#"
               aria-label="Instagram"
               className="hover:text-primary"
             >
-              <Icons.instagram className="w-5 h-5" />
+              <Instagram className="w-5 h-5" />
             </Link>
-            <Link href="#" aria-label="Twitter" className="hover:text-primary">
-              <Icons.twitter className="w-5 h-5" />
-            </Link> */}
           </div>
         </div>
       </div>

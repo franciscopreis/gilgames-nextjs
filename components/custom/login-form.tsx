@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from '@/lib/auth-client'
+import Link from 'next/link'
 
 export function LoginForm({
   className,
@@ -88,6 +89,7 @@ export function LoginForm({
                   variant="outline"
                   type="button"
                   onClick={handleGoogleLogin}
+                  className="border-primary dark:border-secondary"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -108,6 +110,7 @@ export function LoginForm({
                   name="email"
                   type="email"
                   placeholder="m@example.com"
+                  className="border-primary dark:border-secondary"
                   required
                 />
               </Field>
@@ -121,13 +124,19 @@ export function LoginForm({
                     Esqueceste-te da tua password?
                   </a>
                 </div>
-                <Input id="password" name="password" type="password" required />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="border-primary dark:border-secondary"
+                />
                 {error && <p className="text-red-500">{error}</p>}
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
                 <FieldDescription className="text-center">
-                  Não tens conta? <a href="#">Regista-te</a>
+                  Não tens conta? <Link href="/registo">Regista-te</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

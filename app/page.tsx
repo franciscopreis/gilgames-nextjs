@@ -58,7 +58,7 @@ export default function HomePage() {
         />
 
         {/* Overlay escura para contraste */}
-        <div className="absolute inset-0 bg-black/40 -z-5"></div>
+        <div className="absolute inset-0 bg-[#4175BE]/30 -z-5"></div>
 
         {/* Conteúdo do Hero */}
         <h1 className=" text-4xl md:text-6xl mb-4 text-white drop-shadow-lg z-10">
@@ -67,13 +67,13 @@ export default function HomePage() {
         <p className="font-inter text-lg md:text-2xl mb-6 text-white drop-shadow-md z-10">
           Aqui poderás encontrar livros em segunda mão para todos os gostos.
         </p>
-        <Button size="lg" variant="default" className="z-10">
+        <Button size="lg" variant="default" className="z-10 border">
           Dá uma olhada
         </Button>
       </section>
 
       {/* Categorias */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      {/* <section className="max-w-7xl mx-auto px-4 py-16">
         <h2 className="text-3xl mb-8 text-center">Categorias Populares</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {categories.map((cat) => (
@@ -96,7 +96,7 @@ export default function HomePage() {
             </Card>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Novidades */}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -145,7 +145,11 @@ export default function HomePage() {
           Subscreva a nossa newsletter para não perder nenhum lançamento.
         </p>
         <form className="flex flex-col sm:flex-row gap-2 justify-center">
-          <Input type="email" placeholder="O teu email" className="flex-1" />
+          <Input
+            type="email"
+            placeholder="O teu email"
+            className="flex-1 border-primary dark:border-secondary"
+          />
           <Button type="submit">Subscrever</Button>
         </form>
       </section>

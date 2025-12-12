@@ -31,12 +31,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <body className={`${playfair.variable} ${inter.variable} antialiased`}>
+      <body
+        className={`${playfair.variable} ${inter.variable} antialiased mx-auto`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          storageKey="theme-preference"
         >
           <Navbar />
           <main className="font-inter">{children}</main>

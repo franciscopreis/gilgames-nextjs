@@ -1,12 +1,12 @@
+import { nanoid } from 'nanoid'
 import prisma from '../lib/db'
-import cuid from 'cuid'
+import slugify from 'slugify' // Para gerar slug amigável
+import { BookCondition } from '@/lib/generated/prisma/enums'
 
 async function main() {
   console.log('🌱 Seeding database...')
 
-  // --------
-  // CATEGORIES
-  // --------
+  // -------- CATEGORIES --------
   const categories = [
     'Fiction',
     'Fantasy',
@@ -30,15 +30,12 @@ async function main() {
     categoryRecords[name] = category.id
   }
 
-  // --------
-  // AUTHORS
-  // --------
+  // -------- AUTHORS --------
   const authors = [
-    'J. R. R. Tolkien',
-    'Isaac Asimov',
-    'Frank Herbert',
-    'George Orwell',
-    'Harper Lee',
+    'Hans Christian Andersen',
+    'René Descartes',
+    'Jacques Lacan',
+    'Montaigne',
   ]
   const authorRecords: Record<string, string> = {}
 
@@ -51,41 +48,47 @@ async function main() {
     authorRecords[name] = author.id
   }
 
-  // --------
-  // BOOKS
-  // --------
+  // -------- BOOKS --------
   const books = [
     {
-      title: 'Dune',
-      description: 'A science fiction masterpiece.',
-      price: 18.99,
-      stock: 30,
-      authors: ['Frank Herbert'],
-      categories: ['Sci-Fi'],
+      title: 'Contos',
+      description: 'Uma coleção de contos para todas as idades.',
+      price: 9.99,
+      stock: 20,
+      authors: ['Hans Christian Andersen'],
+      categories: ['Fiction'],
+      condition: 'GOOD',
+      coverImage: '/book-covers/andersen-contos.jpeg',
     },
     {
-      title: 'The Hobbit',
-      description: 'A timeless fantasy adventure.',
-      price: 14.99,
-      stock: 40,
-      authors: ['J. R. R. Tolkien'],
-      categories: ['Fantasy'],
+      title: 'Discurso do Método & As Paixões da Alma',
+      description: 'Obra filosófica de René Descartes.',
+      price: 9.99,
+      stock: 15,
+      authors: ['René Descartes'],
+      categories: ['Non-fiction', 'Classic'],
+      condition: 'LIKE_NEW',
+      coverImage: '/book-covers/descartes-discurso-paixoes.jpeg',
     },
     {
-      title: '1984',
-      description: 'A dystopian classic.',
-      price: 12.99,
-      stock: 50,
-      authors: ['George Orwell'],
-      categories: ['Fiction', 'Classic'],
+      title: 'A Família',
+      description: 'Estudo sobre a psicanálise de Jacques Lacan.',
+      price: 9.99,
+      stock: 10,
+      authors: ['Jacques Lacan'],
+      categories: ['Non-fiction'],
+      condition: 'GOOD',
+      coverImage: '/book-covers/lacan-familia.jpeg',
     },
     {
-      title: 'To Kill a Mockingbird',
-      description: 'A novel about justice and racism in the Deep South.',
-      price: 15.99,
-      stock: 25,
-      authors: ['Harper Lee'],
-      categories: ['Fiction', 'Classic'],
+      title: 'Ensaios',
+      description: 'Reflexões de Montaigne sobre a vida e humanidade.',
+      price: 9.99,
+      stock: 12,
+      authors: ['Montaigne'],
+      categories: ['Classic', 'Non-fiction'],
+      condition: 'GOOD',
+      coverImage: '/book-covers/montaigne-ensaios.jpeg',
     },
   ]
   const bookRecords: Record<string, string> = {}
@@ -96,39 +99,54 @@ async function main() {
       id: categoryRecords[name],
     }))
 
+    const conditionEnum: BookCondition = b.condition as BookCondition
+
     const book = await prisma.book.upsert({
       where: { title: b.title },
-      update: {},
+      update: {
+        slug: slugify(b.title, { lower: true, strict: true }),
+        coverImage: b.coverImage,
+      },
       create: {
         title: b.title,
+        slug: slugify(b.title, { lower: true, strict: true }),
         description: b.description,
         price: b.price,
         stock: b.stock,
+        condition: conditionEnum,
+        coverImage: b.coverImage,
         authors: { connect: bookAuthors },
         categories: { connect: bookCategories },
       },
     })
 
     bookRecords[b.title] = book.id
+
+    // BookPriceHistory inicial
+    await prisma.bookPriceHistory.create({
+      data: { bookId: book.id, price: b.price },
+    })
   }
 
-  // --------
-  // USERS + ACCOUNTS
-  // --------
+  // -------- USERS --------
   const users = [
     {
-      name: 'Admin User',
+      firstName: 'Admin',
+      lastName: 'User',
       email: 'admin@example.com',
       role: 'ADMIN',
       password: 'admin123',
     },
     {
-      name: 'Customer User',
+      firstName: 'Customer',
+      lastName: 'User',
       email: 'customer@example.com',
       role: 'CUSTOMER',
       password: 'customer123',
+      phone: '+351912345678',
     },
   ]
+
   const userRecords: Record<string, string> = {}
 
   for (const u of users) {
@@ -136,12 +154,15 @@ async function main() {
       where: { email: u.email },
       update: {},
       create: {
-        name: u.name,
+        id: nanoid(),
+        name: `${u.firstName} ${u.lastName}`,
         email: u.email,
         role: u.role as 'ADMIN' | 'CUSTOMER',
+        emailVerified: true,
+        phone: u.phone,
         accounts: {
           create: {
-            id: cuid(), // ✅ gera um id único
+            id: nanoid(),
             providerId: 'email',
             accountId: u.email,
             password: u.password,
@@ -152,22 +173,52 @@ async function main() {
     userRecords[u.email] = user.id
   }
 
-  // --------
-  // ORDERS + ITEMS
-  // --------
+  // -------- ADDRESS para Customer --------
+  const shippingAddress = await prisma.address.create({
+    data: {
+      userId: userRecords['customer@example.com'],
+      type: 'SHIPPING',
+      street: 'Rua das Flores, 123',
+      city: 'Lisbon',
+      postalCode: '1000-001',
+      country: 'Portugal',
+      phone: '+351912345678',
+    },
+  })
+
+  const billingAddress = await prisma.address.create({
+    data: {
+      userId: userRecords['customer@example.com'],
+      type: 'BILLING',
+      street: 'Av. da Liberdade, 50',
+      city: 'Lisbon',
+      postalCode: '1250-001',
+      country: 'Portugal',
+      phone: '+351912345678',
+    },
+  })
+
+  // -------- ORDERS --------
   await prisma.order.create({
     data: {
       userId: userRecords['customer@example.com'],
-      totalPrice: 31.98,
+      shippingAddressId: shippingAddress.id,
+      billingAddressId: billingAddress.id,
+      totalPrice: 19.98,
       shippingPrice: 5.0,
-      status: 'PENDING',
+      status: 'PENDENTE',
+      paymentMethod: 'STRIPE',
       items: {
         create: [
-          { bookId: bookRecords['Dune'], quantity: 1, priceAtPurchase: 18.99 },
           {
-            bookId: bookRecords['The Hobbit'],
+            bookId: bookRecords['Contos'],
             quantity: 1,
-            priceAtPurchase: 14.99,
+            priceAtPurchase: 9.99,
+          },
+          {
+            bookId: bookRecords['Discurso do Método & As Paixões da Alma'],
+            quantity: 1,
+            priceAtPurchase: 9.99,
           },
         ],
       },

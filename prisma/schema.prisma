@@ -8,66 +8,25 @@ datasource db {
   provider = "postgresql"
 }
 
-model Author {
-  id    String @id @default(cuid())
-  name  String @unique
-  books Book[] @relation("BookAuthors")
-}
-
-model Book {
-  id          String      @id @default(cuid())
-  title       String      @unique
-  description String?
-  price       Decimal     @db.Decimal(10, 2)
-  stock       Int         @default(0)
-  coverImage  String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
-  authors     Author[]    @relation("BookAuthors")
-  categories  Category[]  @relation("BookCategories")
-}
-
-model Category {
-  id    String @id @default(cuid())
-  name  String @unique
-  books Book[] @relation("BookCategories")
-}
-
-model Order {
-  id            String      @id @default(cuid())
-  userId        String?
-  totalPrice    Decimal     @db.Decimal(10, 2)
-  shippingPrice Decimal     @db.Decimal(10, 2)
-  status        OrderStatus @default(PENDING)
-  createdAt     DateTime    @default(now())
-  user          User?       @relation("UserOrders", fields: [userId], references: [id])
-  items         OrderItem[]
-}
-
-model OrderItem {
-  id              String  @id @default(cuid())
-  orderId         String
-  bookId          String
-  quantity        Int     @default(1)
-  priceAtPurchase Decimal @db.Decimal(10, 2)
-  book            Book    @relation(fields: [bookId], references: [id])
-  order           Order   @relation(fields: [orderId], references: [id])
-}
-
+// --------------------------
+// Better Auth Models - Não Alterar
+// --------------------------
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  role          Role      @default(CUSTOMER)
-  createdAt     DateTime  @default(now())
-  name          String
-  emailVerified Boolean   @default(false)
+  id            String    @id
+  name         String?
+  email         String
+  role         Role      @default(CUSTOMER)
+  emailVerified Boolean
   image         String?
+  phone         String?
+  createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  orders        Order[]   @relation("UserOrders")
-  accounts      Account[]
   sessions      Session[]
+  accounts      Account[]
+  addresses     Address[]
+  orders        Order[]
 
+  @@unique([email])
   @@map("user")
 }
 
@@ -82,7 +41,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@map("session")
 }
 
@@ -91,6 +49,7 @@ model Account {
   accountId             String
   providerId            String
   userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -100,22 +59,136 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@map("account")
 }
 
 model Verification {
-  id         String   @id
+  id         String    @id
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime?
+  updatedAt  DateTime?
 
-  @@index([identifier])
   @@map("verification")
+}
+
+// --------------------------
+// Endereços dos Usuários
+// --------------------------
+model Address {
+  id         String    @id @default(nanoid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  type       AddressType
+  street     String
+  city       String
+  postalCode String
+  country    String
+  phone      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relações com Order
+  shippingOrders Order[] @relation("ShippingAddress")
+  billingOrders  Order[] @relation("BillingAddress")
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+// --------------------------
+// Livros e Catálogo
+// --------------------------
+model Author {
+  id    String @id @default(nanoid())
+  name  String @unique
+  books Book[] @relation("BookAuthors")
+}
+
+model Category {
+  id    String @id @default(nanoid())
+  name  String @unique
+  books Book[] @relation("BookCategories")
+}
+
+model Book {
+  id           String      @id @default(nanoid())
+  title        String      @unique
+  slug         String      @unique @default("")
+  description  String?
+  price        Decimal     @db.Decimal(10, 2)
+  stock        Int         @default(0)
+  coverImage   String?
+  condition    BookCondition @default(NEW)
+  ISBN         String?
+  publisher    String?
+  publishedAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  authors      Author[]    @relation("BookAuthors")
+  categories   Category[]  @relation("BookCategories")
+  orderItems   OrderItem[]
+  priceHistory BookPriceHistory[]
+}
+
+enum BookCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  ACCEPTABLE
+  USED
+}
+
+// Histórico de preços
+model BookPriceHistory {
+  id        String   @id @default(nanoid())
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id])
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+}
+
+// --------------------------
+// Pedidos e Carrinho
+// --------------------------
+model Order {
+  id                String        @id @default(nanoid())
+  userId            String?
+  user              User?         @relation(fields: [userId], references: [id])
+  shippingAddressId String?
+  billingAddressId  String?
+  shippingAddress   Address?      @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress    Address?      @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  totalPrice        Decimal       @db.Decimal(10, 2)
+  shippingPrice     Decimal       @db.Decimal(10, 2)
+  status            OrderStatus   @default(PENDENTE)
+  paymentMethod     PaymentMethod?
+  paymentIntentId   String?       // Para Stripe / MBWAY / Pagamentos online
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt @default(now())
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id              String  @id @default(nanoid())
+  orderId         String
+  bookId          String
+  quantity        Int     @default(1)
+  priceAtPurchase Decimal @db.Decimal(10, 2)
+  book            Book    @relation(fields: [bookId], references: [id])
+  order           Order   @relation(fields: [orderId], references: [id])
+}
+
+enum OrderStatus {
+  PENDENTE
+  PAGO
+  ENVIADO
+  COMPLETADO
+  CANCELADO
 }
 
 enum Role {
@@ -123,10 +196,8 @@ enum Role {
   CUSTOMER
 }
 
-enum OrderStatus {
-  PENDING
-  PAID
-  SHIPPED
-  COMPLETED
-  CANCELLED
+enum PaymentMethod {
+  STRIPE
+  MBWAY
+  BANK_TRANSFER
 }

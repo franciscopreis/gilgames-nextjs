@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Book, Heart, Settings, ClipboardList } from 'lucide-react'
+import { Book, Heart, Settings, ClipboardList, LogOut } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -60,35 +60,38 @@ export default function DashboardPage() {
 
   // Mock data for recent purchases
   const recentPurchases = [
-    { title: 'O Hobbit', date: '2025-12-01', status: 'Delivered' },
-    { title: '1984', date: '2025-11-28', status: 'Shipped' },
-    { title: 'O Senhor dos Anéis', date: '2025-11-20', status: 'Delivered' },
+    { title: 'O Hobbit', date: '2025-12-01', status: 'Entregue' },
+    { title: '1984', date: '2025-11-28', status: 'Enviado' },
+    { title: 'O Senhor dos Anéis', date: '2025-11-20', status: 'Entregue' },
   ]
 
   return (
-    <main className="min-h-screen p-6 max-w-4xl mx-auto flex flex-col space-y-6">
+    <main className="min-h-screen p-6 max-w-4xl mx-auto flex flex-col space-y-6 bg-[var(--background)] text-[var(--foreground)]">
       {/* Header */}
       <header className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <h1 className="text-2xl font-bold">
+          {/* texto usa foreground */}Dashboard
+        </h1>
         <div className="flex items-center space-x-4">
-          <Avatar className="h-10 w-10">
+          {/* <Avatar className="h-10 w-10">
             <AvatarImage src={user.image || ''} alt={user.name} />
             <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
           <Button
             variant="secondary"
-            className="text-xs"
+            className="text-xs border-[var(--border)] text-[var(--foreground)]"
             onClick={() => signOut()}
           >
-            Terminar Sessão
+            <LogOut className="md:hidden inline" />
+            <span className="hidden md:inline">Terminar sessão</span>
           </Button>
         </div>
       </header>
 
-      <Separator />
+      <Separator className="border-[var(--border)]" />
 
       {/* Profile Card */}
-      <Card>
+      <Card className="bg-[var(--card)] text-[var(--card-foreground)]">
         <CardHeader>
           <CardTitle>Perfil</CardTitle>
         </CardHeader>
@@ -99,7 +102,10 @@ export default function DashboardPage() {
           <p>
             <span className="font-medium">Email:</span> {user.email}
           </p>
-          <Button variant="outline" className="w-32 mt-2">
+          <Button
+            variant="outline"
+            className="w-32 mt-2 border-border text-foreground"
+          >
             Editar perfil
           </Button>
         </CardContent>
@@ -107,31 +113,32 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-gray-700 transition">
-          <ClipboardList className="mb-2 h-6 w-6 text-white" />
-          <span>Pedidos</span>
-        </Card>
-        <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-gray-700 transition">
-          <Book className="mb-2 h-6 w-6 text-white" />
-          <span>Compras</span>
-        </Card>
-        <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-gray-700 transition">
-          <Heart className="mb-2 h-6 w-6 text-white" />
-          <span>Favoritos</span>
-        </Card>
-        <Card className="flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-gray-700 transition">
-          <Settings className="mb-2 h-6 w-6 text-white" />
-          <span>Definições</span>
-        </Card>
+        {[
+          { icon: ClipboardList, label: 'Pedidos' },
+          { icon: Book, label: 'Compras' },
+          { icon: Heart, label: 'Favoritos' },
+          { icon: Settings, label: 'Definições' },
+        ].map((item, idx) => {
+          const Icon = item.icon
+          return (
+            <Card
+              key={idx}
+              className="flex flex-col items-center justify-center p-4 cursor-pointer transition hover:bg-muted"
+            >
+              <Icon className="h-6 w-6 text-foreground" />
+              <span>{item.label}</span>
+            </Card>
+          )
+        })}
       </div>
 
       {/* Recent Purchases */}
-      <Card>
+      <Card className="bg-card text-card-foreground">
         <CardHeader>
           <CardTitle>Compras Recentes</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table className="text-[var(--foreground)]">
             <TableHeader>
               <TableRow>
                 <TableHead>Livro</TableHead>
@@ -149,6 +156,7 @@ export default function DashboardPage() {
                       variant={
                         item.status === 'Delivered' ? 'outline' : 'secondary'
                       }
+                      className="border-[var(--border)] text-[var(--foreground)]"
                     >
                       {item.status}
                     </Badge>

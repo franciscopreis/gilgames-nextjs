@@ -2,6 +2,7 @@
 
 import { useSession } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import {
   NavigationMenu,
@@ -11,17 +12,15 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
 } from '@/components/custom/navigation-menu'
-
-import { ModeToggle } from '@/components/ui/theme-toggle'
 import { Logo } from '../Logo'
 import { Button } from '@/components/ui/button'
-
 import UserMenuDesktop from './UserMenuDesktop'
 import CartIcon from '../CartIcon'
+import { ModeToggle } from '@/components/ui/theme-toggle'
 
 export default function NavbarDesktop() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session, isPending } = useSession()
 
   return (
     <div className="flex items-center h-16 w-full">
@@ -85,20 +84,39 @@ export default function NavbarDesktop() {
 
       {/* Right actions */}
       <div className="ml-auto flex items-center gap-4">
-        <ModeToggle />
+        {/* Dark mode toggle */}
+        {isPending ? (
+          <div className="w-9 h-9 bg-accent dark:bg-accent-foreground rounded-full animate-pulse" />
+        ) : (
+          <ModeToggle />
+        )}
+
+        {/* Carrinho */}
+
         <CartIcon />
 
-        {/* Logged user */}
-        {session?.user ? (
-          <UserMenuDesktop user={session.user} />
-        ) : (
-          <>
-            <Button variant="outline" onClick={() => router.push('/login')}>
-              Login
-            </Button>
-            <Button onClick={() => router.push('/registo')}>Registo</Button>
-          </>
-        )}
+        {/* Avatar / Login */}
+        <div className="flex items-center gap-2 min-w-9 justify-end">
+          {isPending ? (
+            // Skeleton do mesmo tamanho que os elementos finais
+            <div className="flex gap-2">
+              <div className="w-9 h-9 bg-accent dark:bg-accent-foreground rounded-full animate-pulse" />
+            </div>
+          ) : session?.user ? (
+            <UserMenuDesktop user={session.user} />
+          ) : (
+            <div className="flex gap-2">
+              <Link href="/login">
+                <Button variant="outline" className="h-9 w-20">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/registo">
+                <Button className="h-9 w-20">Registo</Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

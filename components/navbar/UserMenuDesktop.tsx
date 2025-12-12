@@ -23,12 +23,10 @@ interface UserMenuDesktopProps {
 
 export default function UserMenuDesktop({ user }: UserMenuDesktopProps) {
   const router = useRouter()
-
-  // Inicials seguro mesmo que name seja null/undefined
   const initials = user?.name
     ? user.name
         .split(' ')
-        .map((n: string) => n[0])
+        .map((n) => n[0])
         .join('')
     : 'U'
 
